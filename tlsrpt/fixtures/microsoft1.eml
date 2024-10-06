@@ -1,0 +1,155 @@
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Return-Path: tlsrpt-noreply@microsoft.com
+Received: from 10.4.29.98 (LHLO smtp3.hushmail.com) (10.4.29.98) by server
+ with LMTP; Sat, 14 Sep 2024 19:37:41 +0000 (UTC)
+Received: from smtp3.hushmail.com (localhost [127.0.0.1])
+	by smtp3.hushmail.com (Postfix) with SMTP id 328F48000B9
+	for <pawel.krawczyk+DevOps@hush.com>; Sat, 14 Sep 2024 19:37:41 +0000 (UTC)
+X-Hush-Verified-Domain: microsoft.com
+X-Hush-Real-Recipient: krvtz-hostmaster@nym.hush.com
+Received: from BN1PR04CU002.outbound.protection.outlook.com (unknown [52.101.56.139])
+	by smtp3.hushmail.com (Postfix) with ESMTP
+	for <krvtz-hostmaster@nym.hush.com>; Sat, 14 Sep 2024 19:37:40 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MR3xmQQtF/hrXhTYMdrwWlP82BGVxc/KQAGMlJsNfK4zMSbiAXB0FfbbNp+/h60vm17y7jMyaxBtNe2VAKqKdh5gr9petOfxQujQUWxN2Pt8tBIuavFrajuSJyoMZGmBq0Laan4YaxlkXHgcPi2eMyGtT8+TRAhWZp0TP2HFGSQoMnvjpmCck4RCb7Gii8379iJqF+JyM9PWHJ+nNwzt8cbZYcx+tbxCtN3UVFq+cuESNJE2FomidwfMFshlNVMsx0dV1Og+BSFgtxwDTXOAAEuo1SZPXPa0Dt++HfPMciXxoKH1NZht04e54miF4BI8xQOvqlBQKnNHIIknpXHJUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ijtYObHX7DuvmGUGwnSlL2+Juxdv4HT6/uancmq0A/Y=;
+ b=DKQDFDBueq/fKCk5T21VNbWSgoxGjjRA41mGk82eDpHY37lEHGu6VPEGif3Rde7mc0E+vG1CJJiAwas9+vbnuzSAqFGIit37WxokE9jFARdMqOHdMOhTTbQWhVY9dsUi9J0JmHJwiOe4PabRD0TAwElrDQ10QBngHNe7xNx0CfLBBOmFJtfLlN5Kl+17odvlKd9a37oCGNazNjPp2IfoV6DlNTXh4hntBiLdvCNY/nZQ5F+fV6flgUyEswPYaf5rxB9Ly1+MtwcZdtGVGvNN9J8M2dMUmaLO/x84iyNI4AR1A3c8/ziMZidm+eZcLKPcl4hWeAuZAK2cY4ZN9atCtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none
+ action=none header.from=microsoft.com; dkim=none (message not signed);
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ijtYObHX7DuvmGUGwnSlL2+Juxdv4HT6/uancmq0A/Y=;
+ b=BcXoYwb/rAZXYTQmze5un6tdQNTF/Y9a0cvr+ISkxWdKEC7/HIxgd1AmiYpYpFcf2lrSfY0yr8m0hdIK2h0aJ3LHjZ2/uJw4pOGcybsKbD8j/NV7oy+KLBqCE/OQViaSR9YfjV0Eh6VSRgfkP27bCW461C5/QfhCr7yC3Lw0gww=
+Received: from DM6PR00CA0004.namprd00.prod.outlook.com (2603:10b6:5:114::17)
+ by MW4PR21MB1857.namprd21.prod.outlook.com (2603:10b6:303:74::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.11; Sat, 14 Sep
+ 2024 19:37:34 +0000
+Received: from BL2NAM06FT011.Eop-nam06.prod.protection.outlook.com
+ (2603:10b6:5:114:cafe::bb) by DM6PR00CA0004.outlook.office365.com
+ (2603:10b6:5:114::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8005.0 via Frontend
+ Transport; Sat, 14 Sep 2024 19:37:34 +0000
+X-MS-Exchange-Authentication-Results: spf=none (sender IP is 172.179.146.41)
+ smtp.mailfrom=microsoft.com; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from 104.47.53.36 (172.179.146.41) by
+ BL2NAM06FT011.mail.protection.outlook.com (10.152.107.3) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7962.3 via Frontend Transport; Sat, 14 Sep 2024 19:37:31 +0000
+From: <tlsrpt-noreply@microsoft.com>
+To: "krvtz-hostmaster@nym.hush.com" <krvtz-hostmaster@nym.hush.com>
+Date: Sat, 14 Sep 2024 19:37:28 +0000
+Subject: Report Domain: krvtz.net Submitter: microsoft.com Report-ID:
+ 133708152202987951+krvtz.net
+TLS-Report-Domain: krvtz.net
+TLS-Report-Submitter: microsoft.com
+MIME-Version: 1.0
+Message-ID: <133708152202987951+krvtz.net@krvtz.net>
+Content-Type: multipart/report;
+	boundary="_5362dd60-a5d4-4895-8353-1f4f8b64dd89_"; report-type=tlsrpt
+X-MS-TrafficTypeDiagnostic:
+	BL2NAM06FT011:EE_FirstParty-TlsRpt-V3-System|MW4PR21MB1857:EE_FirstParty-TlsRpt-V3-System
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d5ea5037-7f90-4e3b-ee9e-08dcd4f4acd7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|61400799027;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?LhvKOm9WzQeEdN2YeM2CXhdntPBvuJSCHqob4NyakOQoq1pxVTjbdTl2MNve?=
+ =?us-ascii?Q?qZdDKPNsWTNXCAf17iDqm30fehaZhqZ9dlC3OMX6EVVVAgRDlQdCmS4D4EHX?=
+ =?us-ascii?Q?OLbrwN9zP0h3DHQVwwcEjh5ya58ClnP5gFdJLWX2qkq1Tv//l5mvgOWtnt0x?=
+ =?us-ascii?Q?uhbHbo6O7kVGLek1Q+PdnYwMaQExuTn0PA48YV/BWRFNaIDWdYQSCOO3YEwj?=
+ =?us-ascii?Q?Mi0i4qLSoJRsvc0hyxwLkQAfVQL59cPn4gNVpjVVK6nvWicROt2yTAOb9cmE?=
+ =?us-ascii?Q?yASpkIW3GQx6MylDNIeV9pumcdQTqlNytsYghJpxlLBbiMOBP7BYsVqCFUV1?=
+ =?us-ascii?Q?ML9uLD05RYf/5GYGARokitEFfLE5tyJ2GOowxtE2EzKn9upYyA0tgzvm09tC?=
+ =?us-ascii?Q?9CoS6CUAhKAXEjPNxPlEBDwyqk4jlCO2ZZF5AK1YGgJ6EZWqmSei/BmpaE18?=
+ =?us-ascii?Q?uV6X189byrE4Xe4ErxmBnftNtjSDP2cOP4BcMAKdFCNd6j0mXGMdBvedLD5Y?=
+ =?us-ascii?Q?BT3SlLZaJWy3m9lAgPDrBiOL9lG9t6KMRdDl62K1QqmD/Il9yJYKhaCupWGq?=
+ =?us-ascii?Q?yMtYOVDaQBYLb1BRcGM9NaAvAdzO8HV3GLCmDjE82TGnnypYPO1BJNV17qOD?=
+ =?us-ascii?Q?0nJXf84jPHzy4wIdqM2VY2pnoH72AifUxZ+5N+Vzg5xg5pxFEZgbIUKi/OOL?=
+ =?us-ascii?Q?ZoecE15LQApoRbuJFDrOFC108/4NnifbStWYM2KlEl3UksVtBMWE+5Kg/JS8?=
+ =?us-ascii?Q?x0U509kB4lMR7cPOA5T7aPqublMtq6qhPVUs56CnnDw6YHEloLnN1/gug0v1?=
+ =?us-ascii?Q?Ks6akccN9B+JOKJBI1BZMgtfRIpTF5/kYEn0zTlNy1tKmpdszjLIKLJ3RRKW?=
+ =?us-ascii?Q?zER1RJcrs5nKlrShGElLLK9HVa32LAgqq9lZAthmlkISg9glDmPKP2lTrrvp?=
+ =?us-ascii?Q?HhB2C++4v+sTXUn0axM/wAQB5W8sCWx0nHjYE7tbTNheTKf1k4AktKEGIgIk?=
+ =?us-ascii?Q?v9iXc7CqMQghMRZ8580skZfU3ieJBxRjj/aL/vXdsrWXuxmzxpfqZva+K8iA?=
+ =?us-ascii?Q?hXR+BKT4ReALtJVjPdYHLmKv8ybOAueKZo/HURZSWE8DdYcTIItMhWpASzFX?=
+ =?us-ascii?Q?gAdF0qSW+1SRslk9IxMMY/tUN0c6D9O+5v1Ere+/nDfq3EOHjVAFtILUWqf8?=
+ =?us-ascii?Q?H1dBuuBi12nn7Qt/1+zzi885uNZS0qxSDGMyf/VFdzOEKEQT7n5l4rs3oOc2?=
+ =?us-ascii?Q?JkR/35XJ/aIYqrKJVaov4Ix86g9SjpCJThfXiqydldatrpxZvkDYR1beqQz4?=
+ =?us-ascii?Q?3HzakQJU2Ldy15NDterzEyZTPb/i7Z9f5qO+12nJUkZm3of8WxJCCAeEm82w?=
+ =?us-ascii?Q?oQ5m0i+qz2Tq6ZqmvT6CAWySNdW5?=
+X-Forefront-Antispam-Report:
+	CIP:172.179.146.41;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:104.47.53.36;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(61400799027);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	hxSn82c6dWQiBM8RSPBl9xfKt/maSKtyrIjaufHuLObx4iK8NUrSUbxQTwJ/cexQq0/Q6V285i3J6l75wqUIVK/fxgLEBKFk5Rn4w66CI9+aZe+zlxwQ+QizQLHjsHN6ClaIQEeoEO4bK5ojjicL/qcC+wgDSZQ7PtvEupXDPu6miJbP53TUfNrdrpCQszZdkFdPJ1kcIXM6SA8ef9uDpHgZEzKLF7/bgadj/+OOFhjUE5+sms8UuR1Ln54XzBF0mdAnGIJD7ECDNvARqYo3wS+Uwyb8Ueahv2ZDWslfWjPOu+2LvlB20jmAh17NyoKdPPKpfMewZjjNq6sqki41u07eXd4c/w5l4FdGbx/YFOoyGzLZi9pb3LL4Cq/zX65Grii6NkOTONTcu6CWJXww56NJF3W4+uiAevnr4/jqbbOmXBIzTZl9t3QLvZ+w3iBGZ9Bh0OwgYx98nMmoKzNz8sfL0PuNv/XdA2/6xVEjBnJ/Gh2BcunCogTNA1LARnuC
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2024 19:37:31.5533
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5ea5037-7f90-4e3b-ee9e-08dcd4f4acd7
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=72f988bf-86f1-41af-91ab-2d7cd011db47;Ip=[172.179.146.41];Helo=[104.47.53.36]
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource:
+	TreatMessagesAsInternal-MW4PR21MB1857.namprd21.prod.outlook.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1857
+
+--_5362dd60-a5d4-4895-8353-1f4f8b64dd89_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+</head>
+<body>
+<div>This is an aggregate TLS report from microsoft.com</div>
+ <br>
+<br>
+<p><em>Microsoft respects your privacy. Review our online </em><a href=3D"h=
+ttps://privacy.microsoft.com/en-us/privacystatement"><em>Privacy Statement<=
+/em></a><em><br>
+<br>
+<em>Microsoft Corporation </em><br>
+<em>One Microsoft Way</em><br>
+<em>Redmond, WA, USA 98052</em></em></p>
+ </body>
+</html>
+
+--_5362dd60-a5d4-4895-8353-1f4f8b64dd89_
+Content-Type: application/tlsrpt+gzip
+Content-Description:
+ microsoft.com!krvtz.net!1726185600!1726271999!133708152202987951.json.gz
+Content-Disposition: attachment;
+	filename="microsoft.com!krvtz.net!1726185600!1726271999!133708152202987951.json.gz"
+Content-Transfer-Encoding: base64
+
+H4sIAAAAAAAEAL1UTW/cNhD9K4autQzOcPi1p5BD8tZTckpiFMKubAjxSgtJNuIY/u8dOU2qFs21
+kACJ5Js3b2ae9NJM8303Dt+6dZjGduzOfXNofh+O87RMd+sVT/Nlmt8Om+vm1K19O3fjvYBemmXt
+5rXd9tbhLQwVUqtCC/qDUoe3+6NE9ePpFyjUBxPk/ti8XjfHaVy749oO490ksPVhmS9rO05zf3l4
+fnf+IenmOJ2FVHYnyT6cBApaO+XBoFAH74KB377MT+u3m7FfBXqZHobj0C/N4dPL98XzJv/7W7s+
+XzZVy7r8gD63yzoP473gm6d+XqT2w9X7D++fQBDn6dQfrnrROB/7bf31cHXs5kuL6maf9Nx9/aO7
+Fygobb1Sqrn9SX+azt0wStK/A6T+5fF87uY3aeu0dg/t8ng89sty9yiv8tzmc5wex7U54PVfkLtu
+eHic+3+fq9fX61+XKp3t/qvWT58bvAK5FBoKyluVKPiYnGYbASu6SCFmUwtqVWMtOrKvFgA5JJdV
+jJlsIMifm+ufVCnUaKIJpWQHhtEyKFTsABJVW5gwG5+UAlOAZI5RhxyzVsAmVtY7Kkwp5qBjMuwC
+ulAYEIxyogs5FcXWkoTHWAwWxKq9jzUmQpso5hR3VNp4m6lwVU4Z5zllqa1kLih6LRXyiYFEeUmb
+GoeVbPKCtAEcJr+jsjlHBjnw1VWorgDbkELiQqhycBTZ1kAcfUJ2FpwCi7qGIAuX2e2onEUI0iI0
+Iq8Uywq1I2MLghKooQqlMoK0PEoHSsoGTADNXKzXGndU3ptUpTThQrZOZsIhGqxGEZF3tVSMQScP
+wLnkKiVaJGb0OjnO2eyoAgRWubrovEsmuJKVsVFSGkqQixxq7yJXLf1y2mmKVLMgPYtOjLSj4pTY
+mJCIskHKYiqNSdpnHTrZi5pkmhIjExSXiXg21cqwQTIAu72qLG0sIBYECOQjR0sVcyHi4u1WK3BU
+UrZoUDolg9H7knSVCVTj8r7tRSfFRPLnqAzb2GNNldiHYGsKSJs1CApZkrlqmSQFEwIk541YwexV
+VSBSUT4G0bbFGB2JE1mpM6Rqxd6JIDhxZDGgxSEFQt0MI27PlPAfVJubTSm61CizFz1YglbGUy3k
+gpMskbO0Rb4odJA4ColyNm9e9GLR2//5j3P7+iduAyTqTQYAAA==
+
+--_5362dd60-a5d4-4895-8353-1f4f8b64dd89_--
+

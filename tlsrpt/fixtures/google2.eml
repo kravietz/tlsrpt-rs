@@ -1,0 +1,73 @@
+Return-Path: 3rabszhokad8opsfqmz-tnuq-umt-sfqpsujohhpphmf.dpn@smtp-tls-reporting.bounces.google.com
+Received: from 10.4.29.98 (LHLO smtp5.hushmail.com) (10.4.29.98) by server
+ with LMTP; Thu, 19 Sep 2024 11:08:55 +0000 (UTC)
+Received: from smtp5.hushmail.com (localhost [127.0.0.1])
+	by smtp5.hushmail.com (Postfix) with SMTP id 3C276800F69
+	for <pawel.krawczyk+DevOps@hush.com>; Thu, 19 Sep 2024 11:08:55 +0000 (UTC)
+X-Hush-Verified-Domain: google.com
+X-Hush-Real-Recipient: krvtz-hostmaster@nym.hush.com
+Received: from mail-ot1-f71.google.com (unknown [209.85.210.71])
+	by smtp5.hushmail.com (Postfix) with ESMTP
+	for <krvtz-hostmaster@nym.hush.com>; Thu, 19 Sep 2024 11:08:54 +0000 (UTC)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-710cbc3ddfcso733697a34.2
+        for <krvtz-hostmaster@nym.hush.com>; Thu, 19 Sep 2024 04:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1726744133; x=1727348933; darn=nym.hush.com;
+        h=to:from:subject:message-id:tls-report-submitter:tls-report-domain
+         :date:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xsnycOW6o0hFiICh/OqjpCIz7EG8IzuMwuwaClOVQJ0=;
+        b=TBUBPqsNNxk+fYUj0zP3Dw37w3xUrEGXST4aMq7gxopMpiFfGt9+CWmBgAcxJozMJz
+         X0jaQsRA+dXYsU3uZDnj9rWMXe8UOJy9SLUfa9jh/iJo06uAQ5DPs6fSeLM6gNg+Puox
+         JnQTXRlGTRFErLXsE4EHzSKhN6cFIryt83uEXIMHEWZ1j2J2hwXnwRVZ2CYF+DXw1rz2
+         uwcxN9bDHNgzKGDUZP0O7LEnQMuxHzCoo3SiuLxJ3JQbgwfzItRI8mZYhMDG03gyY2f1
+         /6yRJiMrwtFhadc6ta2AyeD0qCDXHmJXz8/sIEqpXP+aHYb6WparzwiA9E4bAm6JvZFE
+         waFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726744133; x=1727348933;
+        h=to:from:subject:message-id:tls-report-submitter:tls-report-domain
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xsnycOW6o0hFiICh/OqjpCIz7EG8IzuMwuwaClOVQJ0=;
+        b=Njjy51Mvo9hWNoEu4EJ8hpbWpW/0M1vT6oqcSx8JinuW1rSmsFa0RWu+yAGpmNALff
+         jtgqPirsAdvZtB5EfXhHK3ikEwvvzPBa7ZjmwYsusDlbmrZgUlyOTZHxECT9P+QFp6wD
+         4hUJbmbQz+IUs1GVYec0rWnIgT5eW8JnZHrbmPZ+aLGGXNhpHEEBlE06xWIRYjDhNB8j
+         XnWE/S+OBJNdfrBHKM1JtwQjFXcKO76YpvXrCZE3GR/P1qQg4Cj2UUo6ni60l66+b3jn
+         tvOVF9jZSPyEFP6R8J21qo4rhQSl6z9rn/usdvdsn70CitwpEg2//v4I81DBF/4zYxjW
+         L+PA==
+X-Gm-Message-State: AOJu0Yy3Xo53WO6hOcmTextdwAsiDNPGz+VBHwhAsmCsBTZ/hSVxjqgB
+	lWL75blRqTbbTW4rrbdBW+uPaDlo2MIv7IRKpPN0zOqEu26g0Mo9D6Bb4T7GEMxj3jq1LELo2+R
+	DsWuNbAVHP2Sd++N7Qeflh7Pi7EglcOdMExOUY4tGsnk1CNt60zJ8mJ4dz4CP5KTr9A==
+X-Google-Smtp-Source: AGHT+IFbLDzsmL+4MgdsuJodYj9pQpS5+OAQo5Way2TOwb7MJmNILhMd7kTixKORAmBV0ovNbeo3IkyqnMjL10dlkcimsg2Vq9FLGum5Ipc=
+MIME-Version: 1.0
+X-Received: by 2002:a05:6830:6c0a:b0:710:f287:717e with SMTP id
+ 46e09a7af769-7110945bf53mr15881404a34.7.1726744132616; Thu, 19 Sep 2024
+ 04:08:52 -0700 (PDT)
+Date: Thu, 19 Sep 2024 04:08:52 -0700
+TLS-Report-Domain: krvtz.net
+TLS-Report-Submitter: google.com
+Message-ID: <66ec0644.050a0220.86df2.1302tls@google.com>
+Subject: Report Domain: krvtz.net Submitter: google.com Report-ID: <2024.09.18T00.00.00Z+krvtz.net@google.com>
+From: noreply-smtp-tls-reporting@google.com
+To: krvtz-hostmaster@nym.hush.com
+Content-Type: multipart/report; boundary="000000000000a485b4062276f26e"; report-type=tlsrpt
+
+--000000000000a485b4062276f26e
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+
+This is an aggregate TLS report from google.com
+
+--000000000000a485b4062276f26e
+Content-Type: application/tlsrpt+gzip; 
+	name="google.com!krvtz.net!1726617600!1726703999!001.json.gz"
+Content-Disposition: attachment; 
+	filename="google.com!krvtz.net!1726617600!1726703999!001.json.gz"
+Content-Transfer-Encoding: base64
+
+H4sIAAAAAAAAAHVRTWvDMAz9K8HnKrjpNtqcdhs7t6eOUoTjZmaxFWyl9IP898npvhgbCCw9Pek9
+21dFscXgLsiOAgT0VtXqiajtbPEcTKlmqkG2EDG00rqqxBgZMsZuIle6ugO9gvlyo3U9xVambGj+
+YVWL+n4lsVXjTBkKjIbBhQMJLXnugbsE0fYU2YX2sZ3MlIa8bL3B4Jp/hPdv8ciXMlgWck+dM84m
+Vb9cb8U53+CWAZ/7bCxx+qSeIXEUSeGro41JXqQu1pv1cS4MT42tCys2o7G5xtMeW4HmevGw1Fpn
+7FQXBmMPlS6/jey+1jfk0QUR/enSn+CVEmfRP2blidLgPcbJOhNjB2kwxqZ0GCSVM3+coSHIimr2
+QTmg64Zof/f1OO7GdxtSYBL0AQAA
+--000000000000a485b4062276f26e--
+

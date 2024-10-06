@@ -1,0 +1,75 @@
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Return-Path: 3urpozhokal4rsvitp2-wqxt-xpw-vitsvxmrkksskpi.gsq@smtp-tls-reporting.bounces.google.com
+Received: from 10.4.29.98 (LHLO smtp2.hushmail.com) (10.4.29.98) by server
+ with LMTP; Mon, 16 Sep 2024 11:17:16 +0000 (UTC)
+Received: from smtp2.hushmail.com (localhost [127.0.0.1])
+	by smtp2.hushmail.com (Postfix) with SMTP id 38E88800A8B
+	for <pawel.krawczyk+DevOps@hush.com>; Mon, 16 Sep 2024 11:17:16 +0000 (UTC)
+X-Hush-Verified-Domain: google.com
+X-Hush-Real-Recipient: krvtz-hostmaster@nym.hush.com
+Received: from mail-ot1-f70.google.com (unknown [209.85.210.70])
+	by smtp2.hushmail.com (Postfix) with ESMTP
+	for <krvtz-hostmaster@nym.hush.com>; Mon, 16 Sep 2024 11:17:15 +0000 (UTC)
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-710dcc46de3so3450113a34.3
+        for <krvtz-hostmaster@nym.hush.com>; Mon, 16 Sep 2024 04:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1726485434; x=1727090234; darn=nym.hush.com;
+        h=to:from:subject:message-id:tls-report-submitter:tls-report-domain
+         :date:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FXZKA0Dxz77OCThTwM/SVQjpBPIdzesKBwrYJiQs0aU=;
+        b=m4YV2PRjG8z4QB5M7wKiQsYAlIZ6tKYVFJk3JLTmGF7mirO5uUa/Xv1R3bIS/YaKQb
+         6AP/dqXW6dXnykn4ZCBEOACrDzHnAFYS2mm1wNbU52nZzkfe0aT+RhX2PzW+6v8kBOPO
+         26h2YPhC9I0gs+Gd/S5bLcOzSKdHEQJxPxxZ2xetzOP6quv1UlPhaV3OjviDyLM8UQcc
+         vEBSUwAkpLUIISS6lbJP2npVLAx0RbqpFvwNO6HLWz3tsbJeZNbIiNwNwsuTolsGSLgO
+         uLVZQaFJw8Af/1IJU4v2pcvRogzlOmMB/HNR9CRFgZXfYrgb+lv7Cj1n9c8BL4SetpEf
+         54Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726485434; x=1727090234;
+        h=to:from:subject:message-id:tls-report-submitter:tls-report-domain
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FXZKA0Dxz77OCThTwM/SVQjpBPIdzesKBwrYJiQs0aU=;
+        b=urwQENw/F7/e0R8vjOS0nPuXwNh4JYBAvukH9trWEPT9/uaZRqGfg87ORE7jHna5+Q
+         Va+6ngw6lKDSY1PCjVNL5mu453Bxm0C8saMa8L3RrMY5hNimuqrxTUsko53lp/Pw81ey
+         0rd0Rb6uTq1TARCfXFuQsZfUss8gKgrI2B7opzasFyiuGcMUU0EuEuL+qRouPedK27bj
+         JPmuVLWvO2d9AnisVmSatZ+ozgzjgu/iorhfq8It2C9zcSh7LzAQKStqhWTENilVD1Gq
+         xV6703iaMntPj0nALS13OaOUwNalUiN6qxiAUE2udFOfZPRL2yIP1IV1UWFtPPObnQ2C
+         1s8w==
+X-Gm-Message-State: AOJu0YzGXJwdGjG9hZH8DyilJiWl68k6WMr+CXEoyH5uxHAKbcFHxK2Q
+	0JIn73U6wvFV6M4WB0O81dh73guOhywdbTML3rkw0f/j3ArtfzNnW8pm/0iD+BF58XsHyRyuNeQ
+	yHVqap77kDViIj65NRTAEw0N/Efz0FiSdQigyHcAdfLDIpQWr/DBr2HOu8f1GcIImeQ==
+X-Google-Smtp-Source: AGHT+IFoDyfQOmH7v7X6Ey4GurADZK5f/fjGd3Oe3MLqSJlVMa7iYIiDnE/7qpuM+zrFQQ+dVm/wPe9pls7xE8W8IWEPBQaQSfCQYp7igMI=
+MIME-Version: 1.0
+X-Received: by 2002:a05:6830:6618:b0:710:e3ff:d3f1 with SMTP id
+ 46e09a7af769-711095213ffmr9370588a34.14.1726485433903; Mon, 16 Sep 2024
+ 04:17:13 -0700 (PDT)
+Date: Mon, 16 Sep 2024 04:17:13 -0700
+TLS-Report-Domain: krvtz.net
+TLS-Report-Submitter: google.com
+Message-ID: <66e813b9.050a0220.395bc2.4615tls@google.com>
+Subject: Report Domain: krvtz.net Submitter: google.com Report-ID: <2024.09.15T00.00.00Z+krvtz.net@google.com>
+From: noreply-smtp-tls-reporting@google.com
+To: krvtz-hostmaster@nym.hush.com
+Content-Type: multipart/report; boundary="000000000000ff6e2506223ab640"; report-type=tlsrpt
+
+--000000000000ff6e2506223ab640
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+
+This is an aggregate TLS report from google.com
+
+--000000000000ff6e2506223ab640
+Content-Type: application/tlsrpt+gzip;
+	name="google.com!krvtz.net!1726358400!1726444799!001.json.gz"
+Content-Disposition: attachment;
+	filename="google.com!krvtz.net!1726358400!1726444799!001.json.gz"
+Content-Transfer-Encoding: base64
+
+H4sIAAAAAAAAAHVRTWvDMAz9K8HnKjjpOlafdhs7t6eOUoTjZqaxHWyl9IP898npvhgrCCw9Pek9
+21cRYoveXpBs8ODRGaHESwhtZ4pXr0sxEw2SgYi+5dZVJMJIkDGyE7mW9QPIJVSLtZRqig1PGd/c
+YdVztVhybMQ4Ezp4Qk1g/T4wLTnqgboE0fQhkvXtczuZKXVwvPUGg23uCO8O8UiX0htich86q61J
+Qr1db8U53+CWAZ37bCxR+qKeIVFkSeaLo4mJX0QVq/XqWDHDhcaowrDNqE2u8bTDlqFKzh+fpJQZ
+O6lCY+yhluWPke33+iY4tJ5Ff7t0J3gPibLoP7P8RGlwDuNknQJhB2nQ2qS0HzjlM3+cDoPnFdXs
+k7JH2w3R/O3LcdyOH3IFWKX0AQAA
+--000000000000ff6e2506223ab640--
+
