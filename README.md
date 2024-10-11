@@ -23,7 +23,7 @@ Options:
 ```
 Note the generic options (e.g. `--debug`) are placed _before_ the action command (e.g. `parse`).
 
-### `parse`
+## Command `parse`
 
 Parse a SMTP TLS report on standard input with auto-detection of JSON (raw report) or RFC822 (gzipped JSON attachment
 embedded in an `.eml` file).  Reports and their timeline are written to a local database file (default: `./tlsrpt.json`)
@@ -49,10 +49,10 @@ TlsRpt {
     date_range: TlsRptDateRange {
         start_datetime: 2023-01-25 0:00:00.0 +00:00:00,
         end_datetime: 2023-01-26 0:00:00.0 +00:00:00,
-    …TRIMMED…
+    …
 ```
 
-### `imap`
+## Command `imap`
 
 Fetch SMTP TLS report emails from an IMAP mailbox. IMAP server parameters can be specified with either command line
 options or environmental variables (especially suitable for credentials) but command-line options take precedence
@@ -67,7 +67,8 @@ used for receiving the reports because when your primary email domain
   -P, --password <PASSWORD>  IMAP password [env: IMAP_PASS=]
   -m, --mailbox <MAILBOX>    IMAP mailbox [env: IMAP_MAILBOX=] [default: INBOX]
   -p, --port <PORT>          IMAP port [env: IMAP_PORT=] [default: 993]
-  -f, --filter <FILTER>      Find TLSRPT emails in mailbox using header (faster, but not supported by all IMAP servers) or by subject (slower, subject to false positives) [default: header] [possible values: header, subject]
+  -f, --filter <FILTER>      Find TLSRPT emails in mailbox using header (faster, but not supported by all IMAP servers)
+                             or by subject (slower, subject to false positives) [default: header] [possible values: header, subject]
   -n, --no-write             do not update status file
 ````
 
@@ -79,7 +80,8 @@ will search for emails with subject starting with `Report Domain:`.
 Examples:
 
 ```
-$ env IMAP_USER=user@example.com IMAP_PASS="…REDACTED…" tlsrpt --verbose imap --server imap.example.com --port 993
+$ env IMAP_USER=user@example.com IMAP_PASS="…" \
+    tlsrpt --verbose imap --server imap.example.com --port 993
 Found TLS report: 2024-09-18T00:00:00Z_krvtz.net
 Found TLS report: 2024-09-13T00:00:00Z_krvtz.net
 Found TLS report: 2024-09-15T00:00:00Z_krvtz.net
@@ -88,7 +90,7 @@ Found TLS report: 2024-09-19T00:00:00Z_krvtz.net
 Found TLS report: 133708152202987951+krvtz.net
 ```
 
-### `report`
+## Command `report`
 
 Read the status file (default: `tlsrpt.json`) and alert about any failures only. When `--verbose` options is passed,
 the summary also displays successful reports. This command is intended to be run manually or from `cron`, producing
@@ -96,12 +98,13 @@ an email in case of a reported TLS failure.
 
 Example:
 
-```angular2html
+```
 $ tlsrpt --verbose report
 Reading 26 reports
 Sts	krvtz.net	0 failures	2 successes	Google Inc. 2024-09-23 0:00:00.0 +00:00:00
 Sts	krvtz.net	1 failures	0 successes	Mail.ru 2023-01-25 0:00:00.0 +00:00:00
-	StsPolicyFetchError	MX	None	Failure code: unable to do http request: Get "https://mta-sts.krvtz.net/.well-known/mta-sts.txt": context deadline exceeded (Client.Timeout exceeded while awaiting headers)	
+	StsPolicyFetchError	MX	None	Failure code: unable to do http request:
+	Get "https://mta-sts.krvtz.net/.well-known/mta-sts.txt": context deadline exceeded (Client.Timeout exceeded while awaiting headers)	
 Sts	krvtz.net	0 failures	4 successes	Google Inc. 2024-09-30 0:00:00.0 +00:00:00
 Sts	krvtz.net	0 failures	3 successes	Google Inc. 2024-09-25 0:00:00.0 +00:00:00
 ```
