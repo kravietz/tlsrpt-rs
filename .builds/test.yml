@@ -1,4 +1,4 @@
-image: archlinux
+image: freebsd/14.x
 packages:
   - rustup
 sources:
@@ -6,19 +6,19 @@ sources:
 tasks:
   - setup: |
       rustup toolchain install nightly stable
-      cd <your project>/
+      cd tlsrpt-rs/
       rustup run stable cargo fetch
   - stable: |
       rustup default stable
-      cd <your project>/
+      cd tlsrpt-rs/
       cargo build --verbose
       cargo test --verbose
   - nightly: |
       rustup default nightly
-      cd <your project>/
+      cd tlsrpt-rs/
       cargo build --verbose ||:
       cargo test --verbose  ||:
   - docs: |
-      cd <your project>/
+      cd tlsrpt-rs/
       rustup run stable cargo doc --no-deps
       rustup run nightly cargo doc --no-deps ||:
