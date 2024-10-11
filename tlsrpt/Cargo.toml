@@ -10,6 +10,7 @@ serde_with = "3.11.0"
 mail-parser = "0.9.4"
 flate2 = "1.0.33"
 cluFlock = "1.2.7"
-clap = { version = "4.5.19", features = ["derive"] }
+clap = { version = "4.5.19", features = ["derive","env"] }
 time = { version = "0.3.36", features = ["serde", "serde-well-known", "macros"] }
 imap = "3.0.0-alpha.14"
+log = "0.4.22"

@@ -1,13 +1,18 @@
 //use json::JsonValue::String;
 
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 use cluFlock::ToFlock;
-use std::env;
 use std::fs::OpenOptions;
 use std::io::Read;
-use tlsrpt::find_tlsrpt;
+wouse tlsrpt::find_tlsrpt;
 use tlsrpt::TlsRpt;
 use tlsrpt::{save_tlsrpt, TlsRptStats};
+
+#[derive(ValueEnum, Clone, Debug)]
+enum ImapFilter {
+    Header,
+    Subject,
+}
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -17,7 +22,7 @@ struct Cli {
     #[clap(short = 'd', long = "debug")]
     debug: bool,
     /// location of the status file
-    #[clap(short = 'b', long = "db", default_value = "./tlsrpt-status.json")]
+    #[clap(short = 'b', long = "db", default_value = "tlsrpt.json")]
     db: String,
 
     #[command(subcommand)]
@@ -34,17 +39,28 @@ enum Commands {
     },
     /// Parse TLS-RPT from IMAP server
     Imap {
-        /// IMAP server hostname - username and password must be passed in environment vars USER and PASSWORD
-        #[clap(short = 's', long = "server")]
+        /// IMAP server hostname
+        #[clap(short = 's', long = "server", env="IMAP_SERVER", required=true)]
         server: String,
+        /// IMAP username
+        #[clap(short = 'U', long = "username", env="IMAP_USER", required=true)]
+        username: String,
+        /// IMAP password
+        #[clap(short = 'P', long = "password", env="IMAP_PASS", required=true)]
+        password: String,
+        /// IMAP mailbox
+        #[clap(short = 'm', long = "mailbox", default_value = "INBOX", env="IMAP_MAILBOX")]
+        mailbox: String,
         /// IMAP port
-        #[clap(short = 'p', long = "port", default_value = "993")]
+        #[clap(short = 'p', long = "port", default_value = "993", env="IMAP_PORT")]
         port: u16,
+        /// Find TLSRPT emails in mailbox using header (faster, but not supported by all IMAP
+        /// servers) or by subject (slower, subject to false positives)
+        #[clap(short = 'f', long = "filter", value_enum, default_value_t = ImapFilter::Header)]
+        filter: ImapFilter,
         /// do not update status file
         #[clap(short = 'n', long = "no-write")]
         no_write: bool,
-        #[clap(short = 'm', long = "mailbox", default_value = "INBOX")]
-        mailbox: String,
     },
     /// Summarize reports seen previously
     Report,
@@ -116,7 +132,7 @@ fn main() {
                                         Some(value) => format!("Failure code: {}", value.to_string()),
                                         None => "".to_string(),
                                     };
-                                    println!("\t{:?}\tMX\t{}\t{}\t{}", failure.result_type, failure.receiving_mx_hostname, failure_code, additional_information);
+                                    println!("\t{:?}\tMX\t{:?}\t{}\t{}", failure.result_type, failure.receiving_mx_hostname, failure_code, additional_information);
                                 }
                             }
                             None => {}
@@ -128,14 +144,29 @@ fn main() {
             println!("\nTotal success {}, total failures {}", total_success, total_fail);
         }
 
-        Commands::Imap { server, no_write, port, mailbox } => {
-            let user = env::var("USER").expect("missing environment variable USER required for IMAP login");
-            let password = env::var("PASSWORD").expect("missing environment variable PASSWORD required for IMAP login");
+        Commands::Imap { server, no_write, port, mailbox, username, password, filter } => {
+
+            if cli.debug {
+                eprintln!("Attempting IMAP login user={:#?} server={:#?}", username, server);
+            }
+
             let client = imap::ClientBuilder::new(&server, *port).connect().unwrap();
-            let mut imap_session = client.login(&user, &password).map_err(|e| e.0).unwrap();
+
+            let mut imap_session = client.login(&username, &password).map_err(|e| e.0).unwrap();
             imap_session.select(mailbox).unwrap();
+
             // IMAP query relies on TLS-Report-Domain header per https://datatracker.ietf.org/doc/html/rfc8460#section-5.3
-            let res = imap_session.search("HEADER \"TLS-Report-Domain\" \"\"").unwrap();
+            let imap_query : String;
+            match filter {
+                ImapFilter::Header => {
+                    imap_query = String::from("HEADER \"TLS-Report-Domain\" \"\"");
+                },
+                ImapFilter::Subject => {
+                    imap_query = String::from("SUBJECT \"Report Domain:\"");
+                }
+            }
+
+            let res = imap_session.search(imap_query).unwrap();
 
             if cli.debug {
                 eprintln!("TLS-RPT emails found in IMAP mailbox: {:#?}", res);
@@ -148,7 +179,7 @@ fn main() {
                         let mut bs = String::new();
                         body.read_to_string(&mut bs).unwrap();
                         if cli.debug {
-                            println!("Email body:\n {}", bs);
+                            eprintln!("Email body:\n {}", bs);
                         }
                         let tls_rpt: TlsRpt = find_tlsrpt(bs).expect("No TLS-RPT found in input");
                         if cli.verbose {
@@ -162,10 +193,11 @@ fn main() {
                             save_tlsrpt(cli.db.clone(), tls_rpt, cli.verbose, cli.debug);
                         }
                     } else {
-                        println!("Message didn't have a body!");
+                        if cli.debug {
+                            eprintln!("Message didn't have a body!");
+                        }
                     }
                 }
-                break;
             }
 
             imap_session.logout().unwrap();

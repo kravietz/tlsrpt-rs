@@ -5,8 +5,8 @@ use mail_parser::{MessageParser, MimeHeaders};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use std::collections::HashMap;
-use std::fs::OpenOptions;
-use std::io::{Read, Seek, Write};
+use std::fs::File;
+use std::io::{Read, Write};
 use std::net::IpAddr;
 use time::OffsetDateTime;
 
@@ -40,7 +40,8 @@ pub struct TlsRptPolicyWrapper {
 #[serde(rename_all = "kebab-case")]
 pub struct TlsRptPolicy {
     pub policy_type: TlsRptPolicyType,
-    policy_string: Vec<String>,
+    // per RFC this is not optional, but at least mail.ru sends reports without this field
+    pub policy_string: Option<Vec<String>>,
     pub policy_domain: String,
     mx_host: Option<Vec<String>>,
 }
@@ -82,8 +83,8 @@ pub enum TlsRptFailureResultType {
 #[serde(rename_all = "kebab-case")]
 pub struct TlsRptFailureDetails {
     pub result_type: TlsRptFailureResultType,
-    pub sending_mta_ip: IpAddr,
-    pub receiving_mx_hostname: String,
+    pub sending_mta_ip: Option<IpAddr>,
+    pub receiving_mx_hostname: Option<String>,
     pub receiving_mx_helo: Option<String>,
     pub receiving_ip: Option<IpAddr>,
     pub failed_session_count: u32,
@@ -130,23 +131,41 @@ pub fn find_tlsrpt(input: String) -> Option<TlsRpt> {
     }
 }
 
-pub fn save_tlsrpt(db_file: String, tls_rpt: TlsRpt, verbose: bool, debug: bool) {
-    // prepare to update local status file
-    let mut file_lock = OpenOptions::new()
-        .create(true).write(true).read(true).open(db_file)
-        .unwrap().wait_exclusive_lock().unwrap();
-    let mut status_input = String::new();
+fn read_status_file(db_file: String, verbose: bool, debug: bool) -> TlsRptStats {
+    let mut status: TlsRptStats = TlsRptStats { timeline: Vec::new(), reports: HashMap::new() };
+    
+    let file = File::open(db_file).unwrap().wait_exclusive_lock();
+    match file {
+        Err(e) => {
+            eprintln!("{}", e);
+            status // empty
+        },
+        Ok(mut file) => {
+            // file exists and opens
+            let mut input : String = String::new();
+            
+            file.read_to_string(&mut input).unwrap();
 
-    file_lock.read_to_string(&mut status_input).unwrap();
-
-    // read JSON status and return blank template if failed (non-existent etc)
-    let mut status: TlsRptStats = serde_json::from_str(&status_input).unwrap_or_else(|e| {
-        if verbose {
-            eprintln!("Error while reading old status (ignored): {:?}", e);
+            // read JSON status and return blank template if failed (malformed etc)
+            status = serde_json::from_str(&input).unwrap_or_else(|e| {
+                if verbose {
+                    eprintln!("Error while reading old status (ignored): {:?}", e);
+                    if debug {
+                        eprintln!("Old status: {:?}", input);
+                    }
+                }
+                status // empty
+            });
+            status // from file
         }
-        TlsRptStats { timeline: Vec::new(), reports: HashMap::new() }
-    });
+    }
+}
 
+pub fn save_tlsrpt(db_file: String, tls_rpt: TlsRpt, verbose: bool, debug: bool) {
+    // try to read existing file
+    let mut status: TlsRptStats = read_status_file(db_file.clone(), verbose, debug);
+    
+    // prepare to write new status
     let report_id = tls_rpt.report_id.clone();
 
     if status.reports.contains_key(&report_id) {
@@ -156,9 +175,6 @@ pub fn save_tlsrpt(db_file: String, tls_rpt: TlsRpt, verbose: bool, debug: bool)
     status.reports.insert(report_id.clone(), tls_rpt.clone());
     status.timeline.push(report_id.clone());
 
-    if debug {
-        eprintln!("Writing status to file {:?}", file_lock);
-    }
 
     let output = serde_json::to_string(&status).unwrap();
 
@@ -166,8 +182,12 @@ pub fn save_tlsrpt(db_file: String, tls_rpt: TlsRpt, verbose: bool, debug: bool)
         eprintln!("New serialized status: {}", output);
     }
 
-    file_lock.rewind().unwrap();
-    file_lock.write(&output.as_bytes()).unwrap();
+    let mut file = File::create(db_file).unwrap().wait_exclusive_lock().unwrap();
+
+    if debug {
+        eprintln!("Writing status to file {:?}", file);
+    }
+    file.write(&output.as_bytes()).unwrap();
 }
 
 #[cfg(test)]
@@ -197,6 +217,11 @@ mod tests {
     #[should_panic]
     fn test_find_tlsrpt_5() {
         let input = std::fs::read_to_string("fixtures/empty.eml").unwrap();
+        find_tlsrpt(input).unwrap();
+    }
+    #[test]
+    fn test_find_tlsrpt_6() {
+        let input = std::fs::read_to_string("fixtures/mail.ru.eml").unwrap();
         find_tlsrpt(input).unwrap();
     }
 }

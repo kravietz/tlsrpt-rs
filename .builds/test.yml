@@ -1,0 +1,24 @@
+image: archlinux
+packages:
+  - rustup
+sources:
+  - <your repo>
+tasks:
+  - setup: |
+      rustup toolchain install nightly stable
+      cd <your project>/
+      rustup run stable cargo fetch
+  - stable: |
+      rustup default stable
+      cd <your project>/
+      cargo build --verbose
+      cargo test --verbose
+  - nightly: |
+      rustup default nightly
+      cd <your project>/
+      cargo build --verbose ||:
+      cargo test --verbose  ||:
+  - docs: |
+      cd <your project>/
+      rustup run stable cargo doc --no-deps
+      rustup run nightly cargo doc --no-deps ||:
