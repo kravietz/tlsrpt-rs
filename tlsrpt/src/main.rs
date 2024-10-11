@@ -4,9 +4,7 @@ use clap::{Parser, Subcommand, ValueEnum};
 use cluFlock::ToFlock;
 use std::fs::OpenOptions;
 use std::io::Read;
-wouse tlsrpt::find_tlsrpt;
-use tlsrpt::TlsRpt;
-use tlsrpt::{save_tlsrpt, TlsRptStats};
+use tlsrpt::{save_tlsrpt, TlsRptStats, TlsRpt, find_tlsrpt};
 
 #[derive(ValueEnum, Clone, Debug)]
 enum ImapFilter {
