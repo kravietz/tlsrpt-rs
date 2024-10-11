@@ -2,7 +2,7 @@ image: archlinux
 packages:
   - rustup
 sources:
-  - <your repo>
+  - https://git.sr.ht/~kravietz/tlsrpt-rs
 tasks:
   - setup: |
       rustup toolchain install nightly stable
