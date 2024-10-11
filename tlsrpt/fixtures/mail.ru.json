@@ -1,0 +1,28 @@
+{
+  "organization-name": "Mail.ru",
+  "date-range": {
+    "start-datetime": "2023-01-25T00:00:00Z",
+    "end-datetime": "2023-01-26T00:00:00Z"
+  },
+  "contact-info": "tls_support@corp.mail.ru",
+  "report-id": "c96d67df-0440-57f7-6e96-c83824d0fdf2@mail.ru",
+  "policies": [
+    {
+      "policy": {
+        "policy-type": "sts",
+        "policy-domain": "krvtz.net"
+      },
+      "summary": {
+        "total-successful-session-count": 0,
+        "total-failure-session-count": 1
+      },
+      "failure-details": [
+        {
+          "result-type": "sts-policy-fetch-error",
+          "failed-session-count": 1,
+          "failure-reason-code": "unable to do http request: Get \"https://mta-sts.krvtz.net/.well-known/mta-sts.txt\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)"
+        }
+      ]
+    }
+  ]
+}

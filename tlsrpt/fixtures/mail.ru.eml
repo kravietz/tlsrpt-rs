@@ -1,0 +1,78 @@
+Return-Path: noreply-smtp-tls-reporting@corp.mail.ru
+Received: from mip.hushmail.com (LHLO smtp3.hushmail.com) (65.39.178.78) by
+ server with LMTP; Thu, 26 Jan 2023 00:10:45 +0000 (UTC)
+Received: from smtp3.hushmail.com (localhost [127.0.0.1])
+	by smtp3.hushmail.com (Postfix) with SMTP id 19FCA1812365
+	for <pawel.krawczyk@hush.com>; Thu, 26 Jan 2023 00:10:45 +0000 (UTC)
+X-Hush-Verified-Domain: corp.mail.ru
+X-Hush-Real-Recipient: krvtz-hostmaster@nym.hush.com
+Received: from relay6.m.smailru.net (unknown [94.100.188.132])
+	by smtp3.hushmail.com (Postfix) with ESMTP
+	for <krvtz-hostmaster@nym.hush.com>; Thu, 26 Jan 2023 00:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=corp.mail.ru; s=mail4;
+	h=Content-Type:MIME-Version:Message-Id:Subject:To:Date:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=2uIoqnhkuwpUCVy9Egv3ZzaAwQVnULWudnTsWhG22N8=;
+	t=1674691842;x=1674781842; 
+	b=eteml14cbFAjWp/ugUCodcxxMqi6txDGPkT56skyvUvdtAbhHQKOYkdQ8KcqZm2qOYsBBg0rKh8bmeZSW/OsYGFwYFkztJaSPjLP6BeRi/w3oAWxwEhpXXO+91fTeb0Y5WCiznpC1eVMWg5x0Dn9GX0JI0vr8wXOqOehY3tNQtVX5/o6CbxgBlhVAGUZYNQSZo7EPZorKpkN3F/1kurjsM89R1mEpjP7xLWNgXXdWhXHxLgybODocBzyQ51ei9IDGIJtzHPQRRsiGWpHrnc6mgPw/4k4RPXQdPivnMWZ7LqlXYGsO0d2uR1oDMhAc5v4IHYRATx459rroP6NbRFyuA==;
+Received: from [10.113.107.63] (port=50934 helo=localhost)
+	by relay6.m.smailru.net with esmtp (envelope-from <noreply-smtp-tls-reporting@corp.mail.ru>)
+	id 1pKpqh-00020K-0p
+	for krvtz-hostmaster@nym.hush.com; Thu, 26 Jan 2023 03:10:39 +0300
+From: noreply-smtp-tls-reporting@corp.mail.ru
+Date: Thu, 26 Jan 2023 03:10:38 +0300
+To: krvtz-hostmaster@nym.hush.com
+Subject: Report
+ Domain: krvtz.net
+ Submitter: mail.ru
+ Report-ID: <c96d67df-0440-57f7-6e96-c83824d0fdf2@mail.ru>
+Auto-Submitted: auto-generated
+TLS-Report-Domain: krvtz.net
+TLS-Report-Submitter: mail.ru
+Message-Id: <c96d67df-0440-57f7-6e96-c83824d0fdf2@mail.ru>
+X-Mailru-Skip-Sts: true
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type="tlsrpt";
+ boundary="----=_NextPart_1674691838991563614"
+Authentication-Results: relay6.m.smailru.net; auth=pass smtp.auth=noreply-smtp-tls-reporting@corp.mail.ru smtp.mailfrom=noreply-smtp-tls-reporting@corp.mail.ru; iprev=pass policy.iprev=10.113.107.63
+X-Mru-FromAddress: noreply-smtp-tls-reporting@corp.mail.ru
+X-Mru-UID: 2620209948
+X-Mru-UCT: 1621249920
+X-Mru-DMARC-Record: v=DMARC1;p=reject;rua=mailto:dmarc_rua@corp.mail.ru;
+X-Mru-DMARC-Domain: corp.mail.ru
+X-618D5548: 429391FD545A488BDF020C14518CE1EA3C50BA39F57346AFEBCA0D978D91CD28
+X-7564579A: 646B95376F6C166E
+X-77F55803: E822A06ED42C499AED32397A435390CA7A1D75668ED282D168429BE0330334E10BBDAAE39103F3638701F0628C4B95CB4BB4E26FFCA36DA74517B6704D95E5E0D09B236D598C5E8442B98C014DDF718D
+X-7FA49CB5: 0D63561A33F958A5020710CB2A6DA355F12D4C5EC4E7BC1DC3E09BA2459803DCCACD7DF95DA8FC8BD5E8D9A59859A8B6AB7B4565E3F9520D
+X-C1DE0DAB: 0D63561A33F958A5020710CB2A6DA355F12D4C5EC4E7BC1D9BBB080C10DF431B5A4FF58CDAEABE2AA132EA92956906CBEC0DA21D194D9A2CCB5012B2E24CD356
+X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D3451BBE684D17D72213FB93CB99642168B651D2A4B6CC0DEB2CB11B1BB610F3ECF9FCC5CDEA4F5EFF91D7E09C32AA3244C6CC2B075078A2C46DD9E3C4B91E0E6908894E9C85370243E3EB3F6AD6EA9203E
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5xhPKz0ZEsZ5k6NOOPWz5QAiZSCXKGQRq3/7KxbCLSB2ESzQkaOXqCBFZPLWFrEGlV1shfWe2EVcxl5toh0c/aCGOghz/frdRhzMe95NxDFdXAer6iYXgmzLbtQp3h845A==
+X-Mailru-MI: 601000
+X-Mras: Ok
+X-Mru-Karma: 2
+
+This is a multipart message in MIME format.
+
+------=_NextPart_1674691838991563614
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+This is an aggregate TLS report from mail.ru
+
+------=_NextPart_1674691838991563614
+Content-Type: application/tlsrpt+gzip;
+ name="mail.ru!krvtz.net!1674604800!1674691200!001.json.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="mail.ru!krvtz.net!1674604800!1674691200!001.json.gz"
+
+H4sIAAAAAAAA/2yRvW7bMBDHX4W4qQVEWVEcOeEUoEOnbpnaBMWVPNlEKFLlHWs7ht69kJ3YQRtA
+g3j/D/yOPEDKa4z+BcWnqCMOBAa+oQ91LlCBQyGdMa4JzAFYMIueZ+KPxrZpr3Vzpdubh6Yxx+87
+VEDRfejq3rmmCmyKgla0j30CAxL4J5dxTFnubcpjPZwxMs1T7R0YsHed61au181y2eibVb/SHd11
+2t5e37ZL1/Sub+8v0TEFbz0xmB+H02E/r3L607IfZ0IWfrPutUsD+ggGnvMfeakjyQzLZRgwH7OS
+BIPmYi0x9yVoJub5+mwqUcA01aulRx9Kpn/1q6mCN8mRoA8nukxcgrxj0q9EPYndaMo5ZThFyf1X
+eunMhHwU3NxTIv4KpCQpl9RGZFSZfhdiMeoriXqEecZmsRgENQvX57UX9ZZC0M8xbeNZlZ08glHz
+29FOlCN0wUdStLNEjpz69CV4ilI/+IFSkYuw3fhACrfoxce12hA6yvwZpqfpafobAAD//+jahomJ
+AgAA
+
+------=_NextPart_1674691838991563614
+
+
