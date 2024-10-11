@@ -1,24 +1,14 @@
 image: freebsd/14.x
 packages:
-  - rustup
+  - rust
 sources:
   - https://git.sr.ht/~kravietz/tlsrpt-rs
 tasks:
-  - setup: |
-      rustup toolchain install nightly stable
-      cd tlsrpt-rs/
-      rustup run stable cargo fetch
   - stable: |
-      rustup default stable
       cd tlsrpt-rs/
       cargo build --verbose
       cargo test --verbose
   - nightly: |
-      rustup default nightly
       cd tlsrpt-rs/
       cargo build --verbose ||:
       cargo test --verbose  ||:
-  - docs: |
-      cd tlsrpt-rs/
-      rustup run stable cargo doc --no-deps
-      rustup run nightly cargo doc --no-deps ||:
