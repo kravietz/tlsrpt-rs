@@ -4,11 +4,7 @@ packages:
 sources:
   - https://git.sr.ht/~kravietz/tlsrpt-rs
 tasks:
-  - stable: |
+  - test: |
       cd tlsrpt-rs/
       cargo build --verbose
       cargo test --verbose
-  - nightly: |
-      cd tlsrpt-rs/
-      cargo build --verbose ||:
-      cargo test --verbose  ||:
