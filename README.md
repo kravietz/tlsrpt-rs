@@ -108,3 +108,7 @@ Sts	krvtz.net	1 failures	0 successes	Mail.ru 2023-01-25 0:00:00.0 +00:00:00
 Sts	krvtz.net	0 failures	4 successes	Google Inc. 2024-09-30 0:00:00.0 +00:00:00
 Sts	krvtz.net	0 failures	3 successes	Google Inc. 2024-09-25 0:00:00.0 +00:00:00
 ```
+
+# License
+
+[Big Time Public License 2.0.0](https://bigtimelicense.com/versions/2.0.0)
