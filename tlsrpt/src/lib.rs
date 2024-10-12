@@ -133,18 +133,17 @@ pub fn find_tlsrpt(input: String) -> Option<TlsRpt> {
 
 fn read_status_file(db_file: String, verbose: bool, debug: bool) -> TlsRptStats {
     let mut status: TlsRptStats = TlsRptStats { timeline: Vec::new(), reports: HashMap::new() };
-    
-    let file = File::open(db_file).unwrap().wait_exclusive_lock();
+
+    let file = File::open(db_file);
     match file {
-        Err(e) => {
-            eprintln!("{}", e);
-            status // empty
+        Err(_) => {
+            // file did not exist, return empty
+            status
         },
-        Ok(mut file) => {
-            // file exists and opens
+        Ok(file) => {
             let mut input : String = String::new();
-            
-            file.read_to_string(&mut input).unwrap();
+
+            file.wait_exclusive_lock().unwrap().read_to_string(&mut input).unwrap();
 
             // read JSON status and return blank template if failed (malformed etc)
             status = serde_json::from_str(&input).unwrap_or_else(|e| {
@@ -154,9 +153,9 @@ fn read_status_file(db_file: String, verbose: bool, debug: bool) -> TlsRptStats 
                         eprintln!("Old status: {:?}", input);
                     }
                 }
-                status // empty
+                status // deserialisation failed, return empty
             });
-            status // from file
+            status // deserialisation, return actual status
         }
     }
 }
@@ -164,7 +163,7 @@ fn read_status_file(db_file: String, verbose: bool, debug: bool) -> TlsRptStats 
 pub fn save_tlsrpt(db_file: String, tls_rpt: TlsRpt, verbose: bool, debug: bool) {
     // try to read existing file
     let mut status: TlsRptStats = read_status_file(db_file.clone(), verbose, debug);
-    
+
     // prepare to write new status
     let report_id = tls_rpt.report_id.clone();
 
