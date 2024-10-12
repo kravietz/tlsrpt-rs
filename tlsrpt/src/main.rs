@@ -139,7 +139,10 @@ fn main() {
                 }
             }
 
-            println!("\nTotal success {}, total failures {}", total_success, total_fail);
+            if cli.verbose {
+                println!("\nTotal success {}, total failures {}", total_success, total_fail);
+            }
+            
         }
 
         Commands::Imap { server, no_write, port, mailbox, username, password, filter } => {
