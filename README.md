@@ -8,6 +8,45 @@ Rust library and utility to parse [SMTP TLS Reports (RFC8460)](https://datatrack
 * Filter and pull SMTP TLS report emails over IMAP
 * Produce summary reports of reports parsed over a period
 
+## Quickstart
+The following assumes you've got [MTA-STS (RFC 8461)](https://datatracker.ietf.org/doc/html/rfc8461) set up using, for example, this
+[NCSC MTA-STS guide](https://www.ncsc.gov.uk/collection/email-security-and-anti-spoofing/using-mta-sts-to-protect-the-privacy-of-your-emails).
+
+Verify:
+```angular2html
+$ dig txt _mta-sts.krvtz.net +short
+"v=STSv1; id=202406081231;"
+$ curl https://mta-sts.krvtz.net/.well-known/mta-sts.txt
+version: STSv1
+mode: enforce
+max_age: 10368000
+mx: carp-20.krvtz.net
+$ dig txt _smtp._tls.krvtz.net +short
+"v=TLSRPTv1;rua=mailto:tlsrpt@example.com"
+```
+Note the last record - this is the mailbox where SMTP TLS reports will be sent to, and from where you want them pulled
+from. It can be any email provider with IMAP support but it needs to be _outside_ of the your MTA-STS protected domain.
+
+Install the binary (you need a working [Rust compiler](https://www.rust-lang.org/tools/install)):
+
+```angular2html
+$ cargo install --git https://git.sr.ht/~kravietz/tlsrpt-rs tlsrpt
+```
+Binaries end up in `~/.cargo/bin`, so you may want to update your shell's `PATH` variable.
+
+Add to `crontab`:
+
+```angular2html
+$ crontab -e
+# add the following
+@hourly env IMAP_USER=tlsrpt@example.com IMAP_PASS=… /home/user/.cargo/bin/tlsrpt imap --server imap.example.com
+@hourly /home/user/.cargo/bin/tlsrpt report
+@weekly /home/user/.cargo/bin/tlsrpt --verbose report
+```
+Routine _success_ reports will be recorded but produce no reports. Any _failure_ report will produce an alert email,
+plus there's a weekly summary of all success and failure alerts over the whole period. To reset statistics, simply
+remove the `tlsprt.json` file.
+
 ## Commands summary
 
 * `parse`   Parse TLS-RPT from JSON or RFC5322 email
