@@ -40,7 +40,7 @@ Add to `crontab`:
 $ crontab -e
 # add the following
 @hourly env IMAP_USER=tlsrpt@example.com IMAP_PASS=… /home/user/.cargo/bin/tlsrpt imap --server imap.example.com
-@hourly /home/user/.cargo/bin/tlsrpt report
+@hourly /home/user/.cargo/bin/tlsrpt report 2>/dev/null
 @weekly /home/user/.cargo/bin/tlsrpt --verbose report
 ```
 Routine _success_ reports will be recorded but produce no reports. Any _failure_ report will produce an alert email,
