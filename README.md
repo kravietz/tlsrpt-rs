@@ -109,6 +109,8 @@ used for receiving the reports because when your primary email domain
   -f, --filter <FILTER>      Find TLSRPT emails in mailbox using header (faster, but not supported by all IMAP servers)
                              or by subject (slower, subject to false positives) [default: header] [possible values: header, subject]
   -n, --no-write             do not update status file
+  -a, --all_messages         by default only NEW messages are fetched from IMAP, this option fetches all messages
+                             including historic messages fetched before
 ````
 
 Per [RFC 8460](https://datatracker.ietf.org/doc/html/rfc8460) each SMTP TLS report email should contain 
