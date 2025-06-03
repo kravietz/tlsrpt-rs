@@ -1,10 +1,8 @@
 //use json::JsonValue::String;
 
 use clap::{Parser, Subcommand, ValueEnum};
-use cluFlock::ToFlock;
-use std::fs::OpenOptions;
 use std::io::Read;
-use tlsrpt::{save_tlsrpt, TlsRptStats, TlsRpt, find_tlsrpt};
+use tlsrpt::{find_tlsrpt, save_tlsrpt, read_status_file, write_status_file, TlsRpt};
 
 #[derive(ValueEnum, Clone, Debug)]
 enum ImapFilter {
@@ -38,19 +36,24 @@ enum Commands {
     /// Parse TLS-RPT from IMAP server
     Imap {
         /// IMAP server hostname
-        #[clap(short = 's', long = "server", env="IMAP_SERVER", required=true)]
+        #[clap(short = 's', long = "server", env = "IMAP_SERVER", required = true)]
         server: String,
         /// IMAP username
-        #[clap(short = 'U', long = "username", env="IMAP_USER", required=true)]
+        #[clap(short = 'U', long = "username", env = "IMAP_USER", required = true)]
         username: String,
         /// IMAP password
-        #[clap(short = 'P', long = "password", env="IMAP_PASS", required=true)]
+        #[clap(short = 'P', long = "password", env = "IMAP_PASS", required = true)]
         password: String,
         /// IMAP mailbox
-        #[clap(short = 'm', long = "mailbox", default_value = "INBOX", env="IMAP_MAILBOX")]
+        #[clap(
+            short = 'm',
+            long = "mailbox",
+            default_value = "INBOX",
+            env = "IMAP_MAILBOX"
+        )]
         mailbox: String,
         /// IMAP port
-        #[clap(short = 'p', long = "port", default_value = "993", env="IMAP_PORT")]
+        #[clap(short = 'p', long = "port", default_value = "993", env = "IMAP_PORT")]
         port: u16,
         /// Find TLSRPT emails in mailbox using header (faster, but not supported by all IMAP
         /// servers) or by subject (slower, subject to false positives)
@@ -87,23 +90,16 @@ fn main() {
                 eprintln!("{:#?}", tls_rpt);
             }
 
+            // no write option is off, so update the status file
             if !*no_write {
                 save_tlsrpt(cli.db.clone(), tls_rpt, cli.verbose, cli.debug);
             }
         }
 
         Commands::Report => {
-            let db_file = cli.db.clone();
-            let mut file_lock = OpenOptions::new()
-                .read(true).open(db_file)
-                .unwrap().wait_exclusive_lock().unwrap();
-            let mut status_input = String::new();
-            file_lock.read_to_string(&mut status_input).unwrap();
-
-            let status: TlsRptStats = serde_json::from_str(&status_input).unwrap();
-
+            let mut status = read_status_file(cli.db.clone(), cli.verbose, cli.debug);
+            
             if cli.debug {
-                eprintln!("Status file {:?}", file_lock);
                 eprintln!("Status = {:#?}", status);
             }
 
@@ -113,28 +109,62 @@ fn main() {
 
             let mut total_success: u32 = 0;
             let mut total_fail: u32 = 0;
+            let mut status_was_updated = false;
 
             for report in status.reports.values() {
                 for policy in report.policies.iter() {
                     total_success += policy.summary.total_successful_session_count;
                     total_fail += policy.summary.total_failure_session_count;
 
-                    if cli.verbose || policy.summary.total_failure_session_count > 0 {
-                        println!("{:?}\t{}\t{} failures\t{} successes\t{} {}",
-                                 policy.policy.policy_type, policy.policy.policy_domain, policy.summary.total_failure_session_count,
-                                 policy.summary.total_successful_session_count, report.organization_name, report.date_range.start_datetime);
+                    // record are only printed when:
+                    // 1) when verbose mode is enabled
+                    // 2) OR  report is failed
+                    // 3)     AND report has not been printed previously
+                    // by default, success reports are *not* printed
+                    if cli.verbose ||
+                        (policy.summary.total_failure_session_count > 0 &&
+                            !status.reported.contains(&report.report_id)) {
+                        // print report header detailing report type, sender, date e.g.
+                        // Sts	krvtz.net	9 failures	0 successes	Google Inc. 2025-06-01 0:00:00.0 +00:00:00
+                        println!(
+                            "{:?}\t{}\t{} failures\t{} successes\t{} {}",
+                            policy.policy.policy_type,
+                            policy.policy.policy_domain,
+                            policy.summary.total_failure_session_count,
+                            policy.summary.total_successful_session_count,
+                            report.organization_name,
+                            report.date_range.start_datetime
+                        );
+                        // record that this policy_id was already reported
+                        status.reported.push(report.report_id.clone());
+                        status_was_updated  = true;
+                        // fail-safe when failure_details fields is not present
                         match &policy.failure_details {
                             Some(failure_details) => {
                                 for failure in failure_details {
-                                    let additional_information = match &failure.additional_information {
-                                        Some(value) => format!("Additional information: {}", value.to_string()),
+                                    let additional_information = match &failure
+                                        .additional_information
+                                    {
+                                        Some(value) => {
+                                            format!("Additional information: {}", value.to_string())
+                                        }
                                         None => "".to_string(),
                                     };
                                     let failure_code = match &failure.failure_reason_code {
-                                        Some(value) => format!("Failure code: {}", value.to_string()),
+                                        Some(value) => {
+                                            format!("Failure code: {}", value.to_string())
+                                        }
                                         None => "".to_string(),
                                     };
-                                    println!("\t{:?}\tMX\t{:?}\t{}\t{}", failure.result_type, failure.receiving_mx_hostname, failure_code, additional_information);
+                                    // display indented line for each specific failure e.g.
+                                    // CertificateNotTrusted	MX	Some("carp-20.krvtz.net")
+                                    println!(
+                                        "\t{:?}\tMX\t{:?}\t{}\t{}",
+                                        failure.result_type,
+                                        failure.receiving_mx_hostname,
+                                        failure_code,
+                                        additional_information
+                                    );
                                 }
                             }
                             None => {}
@@ -142,17 +172,34 @@ fn main() {
                     }
                 }
             }
+            
+            if status_was_updated {
+                write_status_file(cli.db.clone(), status, cli.verbose, cli.debug);
+            }
 
             if cli.verbose {
-                println!("\nTotal success {}, total failures {}", total_success, total_fail);
+                println!(
+                    "\nTotal success {}, total failures {}",
+                    total_success, total_fail
+                );
             }
-            
         }
 
-        Commands::Imap { server, no_write, port, mailbox, username, password, filter, all_messages   } => {
-
+        Commands::Imap {
+            server,
+            no_write,
+            port,
+            mailbox,
+            username,
+            password,
+            filter,
+            all_messages,
+        } => {
             if cli.debug {
-                eprintln!("Attempting IMAP login user={:#?} server={:#?}", username, server);
+                eprintln!(
+                    "Attempting IMAP login user={:#?} server={:#?}",
+                    username, server
+                );
             }
 
             let client = imap::ClientBuilder::new(&server, *port).connect().unwrap();
@@ -161,18 +208,19 @@ fn main() {
             imap_session.select(mailbox).unwrap();
 
             // IMAP query relies on TLS-Report-Domain header per https://datatracker.ietf.org/doc/html/rfc8460#section-5.3
-            let imap_query : String;
-            let imap_new= if *all_messages {
-                ""      // all_messages enabled - fetch historic messages
+            let imap_query: String;
+            let imap_new = if *all_messages {
+                "" // all_messages enabled - fetch historic messages
             } else {
-                "NEW "   // default - only fetch new messages
-            }.to_string();
-            
+                "NEW " // default - only fetch new messages
+            }
+            .to_string();
+
             // IMAP SEARCH query syntax https://tools.ietf.org/html/rfc3501#section-6.4.4
             match filter {
                 ImapFilter::Header => {
                     imap_query = format!("{imap_new}HEADER \"TLS-Report-Domain\" \"\"");
-                },
+                }
                 ImapFilter::Subject => {
                     imap_query = format!("{imap_new}SUBJECT \"Report Domain:\"");
                 }
@@ -181,7 +229,7 @@ fn main() {
             if cli.debug {
                 eprintln!("IMAP filter={:#?}", imap_query);
             }
-            
+
             let res = imap_session.search(imap_query).unwrap();
 
             if cli.debug {
@@ -205,6 +253,7 @@ fn main() {
                             eprintln!("TLS-RPT:\n{:#?}", tls_rpt);
                         }
 
+                        // no write option is off, so update the status file
                         if !*no_write {
                             save_tlsrpt(cli.db.clone(), tls_rpt, cli.verbose, cli.debug);
                         }
@@ -220,4 +269,3 @@ fn main() {
         }
     }
 }
-

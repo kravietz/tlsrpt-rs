@@ -12,10 +12,12 @@ use time::OffsetDateTime;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TlsRptStats {
-    /// chronological list of reports received
+    /// chronological list of report_ids in the order received
     pub timeline: Vec<String>,
-    /// individual reports are stored here referred by policy
+    /// full reports are stored here referred by their report_id 
     pub reports: HashMap<String, TlsRpt>,
+    /// report_ids of reports that have been already reported to avoid sending repeated reports
+    pub reported: Vec<String>,
 }
 
 // TLS-RPT https://datatracker.ietf.org/doc/html/rfc8460
@@ -102,6 +104,7 @@ pub struct TlsRpt {
     pub policies: Vec<TlsRptPolicyWrapper>,
 }
 
+// find TLS-RPT in email attachment, guessing if it's ZIP, GZ or raw JSON
 pub fn find_tlsrpt(input: String) -> Option<TlsRpt> {
     // try to tlsrpt as JSON - check if raw TLS-RPT was passed on input
     if input.starts_with("{") { // dummy JSON detection heuristics
@@ -131,8 +134,8 @@ pub fn find_tlsrpt(input: String) -> Option<TlsRpt> {
     }
 }
 
-fn read_status_file(db_file: String, verbose: bool, debug: bool) -> TlsRptStats {
-    let mut status: TlsRptStats = TlsRptStats { timeline: Vec::new(), reports: HashMap::new() };
+pub fn read_status_file(db_file: String, verbose: bool, debug: bool) -> TlsRptStats {
+    let mut status: TlsRptStats = TlsRptStats { timeline: Vec::new(), reports: HashMap::new(), reported: Vec::new() };
 
     let file = File::open(db_file);
     match file {
@@ -160,21 +163,7 @@ fn read_status_file(db_file: String, verbose: bool, debug: bool) -> TlsRptStats 
     }
 }
 
-pub fn save_tlsrpt(db_file: String, tls_rpt: TlsRpt, verbose: bool, debug: bool) {
-    // try to read existing file
-    let mut status: TlsRptStats = read_status_file(db_file.clone(), verbose, debug);
-
-    // prepare to write new status
-    let report_id = tls_rpt.report_id.clone();
-
-    if status.reports.contains_key(&report_id) {
-        if verbose { eprintln!("The report {report_id} is already processed, skipping."); }
-        return;
-    }
-    status.reports.insert(report_id.clone(), tls_rpt.clone());
-    status.timeline.push(report_id.clone());
-
-
+pub fn write_status_file(db_file: String, status: TlsRptStats, _verbose: bool, debug: bool) {
     let output = serde_json::to_string(&status).unwrap();
 
     if debug {
@@ -187,6 +176,22 @@ pub fn save_tlsrpt(db_file: String, tls_rpt: TlsRpt, verbose: bool, debug: bool)
         eprintln!("Writing status to file {:?}", file);
     }
     file.write(&output.as_bytes()).unwrap();
+}
+
+pub fn save_tlsrpt(status_file : String, tls_rpt: TlsRpt, verbose: bool, debug: bool) {
+    let mut status = read_status_file(status_file.clone(), verbose, debug);
+    let report_id = tls_rpt.report_id.clone();
+    
+    // deduplication
+    if status.reports.contains_key(&report_id) {
+        if verbose { eprintln!("The report {report_id} is already processed, skipping."); }
+        return;
+    }
+    status.reports.insert(report_id.clone(), tls_rpt.clone());
+    status.timeline.push(report_id.clone());
+
+    write_status_file(status_file.clone(), status, verbose, debug);
+    
 }
 
 #[cfg(test)]
