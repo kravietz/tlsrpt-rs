@@ -59,6 +59,10 @@ enum Commands {
         /// do not update status file
         #[clap(short = 'n', long = "no-write")]
         no_write: bool,
+        /// by default only NEW messages are fetched from IMAP, this option fetches all messages,
+        /// including historic messages fetched before
+        #[clap(short = 'a', long = "all-messages", default_value_t = false)]
+        all_messages: bool,
     },
     /// Summarize reports seen previously
     Report,
@@ -145,7 +149,7 @@ fn main() {
             
         }
 
-        Commands::Imap { server, no_write, port, mailbox, username, password, filter } => {
+        Commands::Imap { server, no_write, port, mailbox, username, password, filter, all_messages   } => {
 
             if cli.debug {
                 eprintln!("Attempting IMAP login user={:#?} server={:#?}", username, server);
@@ -158,15 +162,26 @@ fn main() {
 
             // IMAP query relies on TLS-Report-Domain header per https://datatracker.ietf.org/doc/html/rfc8460#section-5.3
             let imap_query : String;
+            let imap_new= if *all_messages {
+                ""      // all_messages enabled - fetch historic messages
+            } else {
+                "NEW "   // default - only fetch new messages
+            }.to_string();
+            
+            // IMAP SEARCH query syntax https://tools.ietf.org/html/rfc3501#section-6.4.4
             match filter {
                 ImapFilter::Header => {
-                    imap_query = String::from("HEADER \"TLS-Report-Domain\" \"\"");
+                    imap_query = format!("{imap_new}HEADER \"TLS-Report-Domain\" \"\"");
                 },
                 ImapFilter::Subject => {
-                    imap_query = String::from("SUBJECT \"Report Domain:\"");
+                    imap_query = format!("{imap_new}SUBJECT \"Report Domain:\"");
                 }
             }
 
+            if cli.debug {
+                eprintln!("IMAP filter={:#?}", imap_query);
+            }
+            
             let res = imap_session.search(imap_query).unwrap();
 
             if cli.debug {
